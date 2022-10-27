@@ -9,6 +9,4 @@ do
 	sleep 1
 done &
 
-xrdb -merge /home/manu/.Xresources 
-feh --bg-scale /home/manu/Pictures/cyber-outrun-vaporwave-art.jpg
-exec dwm
+
