@@ -29,7 +29,7 @@ git clone https://git.suckless.org/dwm $HOMEDIR/dwm
 cp config.h $HOMEDIR/dwm/
 cp manudwm.sh $HOMEDIR/dwm/
 chmod +x $HOMEDIR/dwm/manudwm.sh
-$HOMEDIR/dwm/manudwm.sh
+(cd $HOMEDIR/dwm && $HOMEDIR/dwm/manudwm.sh)
 
 echo "do other stuff"
 apt -y purge lightdm 
