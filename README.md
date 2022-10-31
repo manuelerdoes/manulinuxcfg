@@ -13,5 +13,7 @@ bash script to configure a fresh debian installation to my taste
 other stuff to eventually do in new systems:
 - add new user to /etc/sudoers
 - dpkg-reconfigure keyboard-configuration
-- dpkg-reconfigure locales
+- dpkg-reconfigure locales (choose de_CH and en_US, en_US as default)
+- with sudo update-locale, add TIME, TELEPHONE, NUMERIC, NAME, MONETARY, MEASUREMENT, ADDRESS
+- sudo locale-gen
 - setupcon
