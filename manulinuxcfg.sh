@@ -2,7 +2,7 @@
 
 HOMEDIR=/home/manu
 SCALINGFACTOR=2
-VM=TRUE
+VM=FALSE
 
 echo "alias ll='ls -lah'" >> $HOMEDIR/.bashrc
 echo "alias l='ls -lh'" >> $HOMEDIR/.bashrc
