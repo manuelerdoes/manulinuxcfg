@@ -1,5 +1,3 @@
-#!/bin/bash
-
 speedyscan() {
   for PORT in {1..10000}
   do 
