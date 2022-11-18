@@ -6,6 +6,7 @@ VM=TRUE
 
 echo "alias ll='ls -lah'" >> $HOMEDIR/.bashrc
 echo "alias l='ls -lh'" >> $HOMEDIR/.bashrc
+cat functions.sh >> $HOMEDIR/.bashrc
 
 cp .Xresources $HOMEDIR/.Xresources
 cp .xinitrc $HOMEDIR/.xinitrc
