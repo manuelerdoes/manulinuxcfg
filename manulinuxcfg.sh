@@ -16,7 +16,7 @@ echo "exec dwm" >> $HOMEDIR/.xinitrc
 cp bg.jpg $HOMEDIR
 
 apt update && apt -y upgrade
-apt -y install vim rxvt-unicode git build-essential make gcc libx11-dev libxft-dev libxinerama-dev xorg xsel feh chromium dolphin suckless-tools qt5ct evince imagemagick 
+apt -y install vim rxvt-unicode git build-essential make gcc libx11-dev libxft-dev libxinerama-dev xorg xsel feh chromium dolphin suckless-tools qt5ct evince imagemagick psmisc
 
 git clone https://git.suckless.org/dwm $HOMEDIR/dwm
 cp config.h $HOMEDIR/dwm/
