@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# load X resources first so urxvtd starts with the right colors/fonts/keybinds
+xrdb -merge "$HOME/.Xresources"
+feh --bg-scale "$HOME/bg.jpg"
+
 urxvtd -f
 
 export QT_QPA_PLATFORMTHEME="qt5ct"
@@ -11,3 +15,4 @@ done &
 
 setxkbmap ch
 
+# the setup script appends GDK_SCALE, vmtoolsd (VMware only) and "exec dwm" below
