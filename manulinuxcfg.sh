@@ -47,10 +47,10 @@ echo "exec dwm" >> "$HOMEDIR/.xinitrc"
 
 # --- dwm ---
 if [[ -d "$HOMEDIR/dwm/.git" ]]; then
-    git -C "$HOMEDIR/dwm" checkout config.h   # drop our copied config so pull can't conflict
-    git -C "$HOMEDIR/dwm" pull
+    runuser -u "$USERNAME" -- git -C "$HOMEDIR/dwm" checkout config.h
+    runuser -u "$USERNAME" -- git -C "$HOMEDIR/dwm" pull
 else
-    git clone https://git.suckless.org/dwm "$HOMEDIR/dwm"
+    runuser -u "$USERNAME" -- git clone https://git.suckless.org/dwm "$HOMEDIR/dwm"
 fi
 cp config.h manudwm.sh "$HOMEDIR/dwm/"
 chmod +x "$HOMEDIR/dwm/manudwm.sh"
