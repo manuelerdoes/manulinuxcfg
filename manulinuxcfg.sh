@@ -15,7 +15,7 @@ id "$USERNAME" >/dev/null 2>&1 || { echo "User $USERNAME does not exist." >&2; e
 
 # --- packages ---
 apt update && apt -y upgrade
-apt -y install vim rxvt-unicode urxvt-perls xclip xsel git build-essential make gcc \
+apt -y install vim rxvt-unicode xsel curl git build-essential make gcc \
     libx11-dev libxft-dev libxinerama-dev xorg feh chromium dolphin suckless-tools \
     qt5ct evince imagemagick psmisc
 
@@ -45,8 +45,16 @@ fi
 
 echo "exec dwm" >> "$HOMEDIR/.xinitrc"
 
+# --- urxvt extension (not packaged in Debian) ---
+mkdir -p "$HOMEDIR/.urxvt/ext"
+if ! curl -fsSL https://raw.githubusercontent.com/xyb3rt/urxvt-perls/master/keyboard-select \
+        -o "$HOMEDIR/.urxvt/ext/keyboard-select"; then
+    echo "WARNING: could not download keyboard-select, continuing without it." >&2
+fi
+
 # --- dwm ---
 if [[ -d "$HOMEDIR/dwm/.git" ]]; then
+    chown -R "$USERNAME:$USERNAME" "$HOMEDIR/dwm"   # earlier runs left root-owned files
     runuser -u "$USERNAME" -- git -C "$HOMEDIR/dwm" checkout config.h
     runuser -u "$USERNAME" -- git -C "$HOMEDIR/dwm" pull
 else
@@ -57,8 +65,8 @@ chmod +x "$HOMEDIR/dwm/manudwm.sh"
 (cd "$HOMEDIR/dwm" && ./manudwm.sh)
 
 # --- ownership (script runs as root) ---
-chown -R "$USERNAME:$USERNAME" "$HOMEDIR/dwm" "$HOMEDIR/.Xresources" \
-    "$HOMEDIR/.xinitrc" "$HOMEDIR/bg.jpg"
+chown -R "$USERNAME:$USERNAME" "$HOMEDIR/dwm" "$HOMEDIR/.urxvt" \
+    "$HOMEDIR/.Xresources" "$HOMEDIR/.xinitrc" "$HOMEDIR/bg.jpg"
 
 apt -y purge lightdm || true
 
