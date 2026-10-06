@@ -44,6 +44,7 @@ if [[ "$(systemd-detect-virt)" == "vmware" ]]; then
     echo "vmtoolsd -n vmusr &" >> "$HOMEDIR/.xinitrc"
 fi
 
+echo "dbus-update-activation-environment --systemd DISPLAY XAUTHORITY" >> "$HOMEDIR/.xinitrc"
 echo "exec dwm" >> "$HOMEDIR/.xinitrc"
 
 # --- urxvt extension (not packaged in Debian) ---
