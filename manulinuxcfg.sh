@@ -1,30 +1,55 @@
 #!/bin/bash
+set -e
+cd "$(dirname "$0")"
 
-HOMEDIR=/home/manu
-SCALINGFACTOR=2
+USERNAME=manu
+HOMEDIR=/home/$USERNAME
+SCALINGFACTOR=2          # 1 = no scaling
+export DEBIAN_FRONTEND=noninteractive
 
-echo "alias ll='ls -lah'" >> $HOMEDIR/.bashrc
-echo "alias l='ls -lh'" >> $HOMEDIR/.bashrc
-cat functions.sh >> $HOMEDIR/.bashrc
+if [[ $EUID -ne 0 ]]; then
+    echo "Run this script as root." >&2
+    exit 1
+fi
+id "$USERNAME" >/dev/null 2>&1 || { echo "User $USERNAME does not exist." >&2; exit 1; }
 
-cp .Xresources $HOMEDIR/.Xresources
-cp .xinitrc $HOMEDIR/.xinitrc
-echo "xrdb -merge $HOMEDIR/.Xresources" >> $HOMEDIR/.xinitrc
-echo "feh --bg-scale $HOMEDIR/bg.jpg" >> $HOMEDIR/.xinitrc
-echo "exec dwm" >> $HOMEDIR/.xinitrc
-
-cp bg.jpg $HOMEDIR
-
+# --- packages ---
 apt update && apt -y upgrade
-apt -y install vim rxvt-unicode git build-essential make gcc libx11-dev libxft-dev libxinerama-dev xorg xsel feh chromium dolphin suckless-tools qt5ct evince imagemagick psmisc
+apt -y install vim rxvt-unicode urxvt-perls xclip xsel git build-essential make gcc \
+    libx11-dev libxft-dev libxinerama-dev xorg feh chromium dolphin suckless-tools \
+    qt5ct evince imagemagick psmisc
 
-git clone https://git.suckless.org/dwm $HOMEDIR/dwm
-cp config.h $HOMEDIR/dwm/
-cp manudwm.sh $HOMEDIR/dwm/
-chmod +x $HOMEDIR/dwm/manudwm.sh
-(cd $HOMEDIR/dwm && $HOMEDIR/dwm/manudwm.sh)
+# --- shell ---
+echo "alias ll='ls -lah'" >> "$HOMEDIR/.bashrc"
+echo "alias l='ls -lh'" >> "$HOMEDIR/.bashrc"
+cat functions.sh >> "$HOMEDIR/.bashrc"
 
-apt -y purge lightdm 
-xfconf-query -c xsettings -p /Gdk/WindowScalingFactor -s $SCALINGFACTOR
+# --- X session ---
+cp .Xresources "$HOMEDIR/.Xresources"
+cp .xinitrc "$HOMEDIR/.xinitrc"
+cp bg.jpg "$HOMEDIR/"
+
+if (( SCALINGFACTOR > 1 )); then
+    echo "export GDK_SCALE=$SCALINGFACTOR" >> "$HOMEDIR/.xinitrc"
+fi
+
+if [[ "$(systemd-detect-virt)" == "vmware" ]]; then
+    apt -y install open-vm-tools-desktop
+    echo "vmtoolsd -n vmusr &" >> "$HOMEDIR/.xinitrc"
+fi
+
+echo "exec dwm" >> "$HOMEDIR/.xinitrc"
+
+# --- dwm ---
+git clone https://git.suckless.org/dwm "$HOMEDIR/dwm"
+cp config.h manudwm.sh "$HOMEDIR/dwm/"
+chmod +x "$HOMEDIR/dwm/manudwm.sh"
+(cd "$HOMEDIR/dwm" && ./manudwm.sh)
+
+# --- ownership (script runs as root) ---
+chown -R "$USERNAME:$USERNAME" "$HOMEDIR/dwm" "$HOMEDIR/.Xresources" \
+    "$HOMEDIR/.xinitrc" "$HOMEDIR/bg.jpg"
+
+apt -y purge lightdm || true
 
 systemctl reboot
