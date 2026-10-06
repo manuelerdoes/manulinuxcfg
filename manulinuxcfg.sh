@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+export PATH="$PATH:/usr/sbin:/sbin"
 cd "$(dirname "$0")"
 
 USERNAME=manu
@@ -55,7 +56,6 @@ fi
 # --- dwm ---
 if [[ -d "$HOMEDIR/dwm/.git" ]]; then
     chown -R "$USERNAME:$USERNAME" "$HOMEDIR/dwm"   # earlier runs left root-owned files
-    runuser -u "$USERNAME" -- git -C "$HOMEDIR/dwm" checkout config.h
     runuser -u "$USERNAME" -- git -C "$HOMEDIR/dwm" pull
 else
     runuser -u "$USERNAME" -- git clone https://git.suckless.org/dwm "$HOMEDIR/dwm"
