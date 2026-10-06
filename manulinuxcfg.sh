@@ -20,9 +20,14 @@ apt -y install vim rxvt-unicode urxvt-perls xclip xsel git build-essential make 
     qt5ct evince imagemagick psmisc
 
 # --- shell ---
-echo "alias ll='ls -lah'" >> "$HOMEDIR/.bashrc"
-echo "alias l='ls -lh'" >> "$HOMEDIR/.bashrc"
-cat functions.sh >> "$HOMEDIR/.bashrc"
+if ! grep -q "# manulinuxcfg" "$HOMEDIR/.bashrc"; then
+    {
+        echo "# manulinuxcfg"
+        echo "alias ll='ls -lah'"
+        echo "alias l='ls -lh'"
+        cat functions.sh
+    } >> "$HOMEDIR/.bashrc"
+fi
 
 # --- X session ---
 cp .Xresources "$HOMEDIR/.Xresources"
@@ -41,7 +46,12 @@ fi
 echo "exec dwm" >> "$HOMEDIR/.xinitrc"
 
 # --- dwm ---
-git clone https://git.suckless.org/dwm "$HOMEDIR/dwm"
+if [[ -d "$HOMEDIR/dwm/.git" ]]; then
+    git -C "$HOMEDIR/dwm" checkout config.h   # drop our copied config so pull can't conflict
+    git -C "$HOMEDIR/dwm" pull
+else
+    git clone https://git.suckless.org/dwm "$HOMEDIR/dwm"
+fi
 cp config.h manudwm.sh "$HOMEDIR/dwm/"
 chmod +x "$HOMEDIR/dwm/manudwm.sh"
 (cd "$HOMEDIR/dwm" && ./manudwm.sh)
